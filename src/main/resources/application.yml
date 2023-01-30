@@ -1,0 +1,28 @@
+spring:
+  profiles:
+    active: "dev"
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5430/mypastebin?schema=public
+    password: admin
+    username: admin
+    pool:
+      enabled: true
+      initial-size: 2
+      max-size: 2
+  main:
+    web-application-type: reactive
+
+logging:
+  level:
+    web: DEBUG
+    org:
+      springframework:
+        data:
+          r2dbc: DEBUG
