@@ -4,22 +4,19 @@ import com.defers.mypastebin.enums.Roles;
 import lombok.Data;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 @Data
 @Entity
-@Table(name = "user")
-public class User extends BaseEntity {
+@Table(name = "user_role")
+public class UserRole extends BaseEntity{
     @Id
-    private String username;
-    private String password;
-
-    @Email
-    @NotNull
-    private String email;
+    @OneToOne(cascade = CascadeType.ALL)
+    @Column(name = "user_name")
+    private String userName;
 
     @Enumerated(value = EnumType.STRING)
-    @OneToOne(mappedBy = "userName")
+    @NotNull
+    @Column(name = "role")
     private Roles role;
 }

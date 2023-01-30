@@ -1,12 +1,61 @@
 package com.defers.mypastebin.security;
 
+import com.defers.mypastebin.domain.User;
+import com.defers.mypastebin.dto.UserDTO;
+import com.defers.mypastebin.dto.converter.ConverterDTO;
+import com.defers.mypastebin.exception.UserNotFoundException;
+import com.defers.mypastebin.repository.UserRepository;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public class UserDetailsServiceImpl implements ReactiveUserDetailsService {
+import static com.defers.mypastebin.util.MessagesUtils.getFormattedMessage;
+
+@Service
+public class UserDetailsServiceImpl implements ReactiveUserDetailsService, UserService {
+    private final UserRepository userRepository;
+    private final ConverterDTO converterDTO;
+
+    public UserDetailsServiceImpl(UserRepository userRepository, ConverterDTO converterDTO) {
+        this.userRepository = userRepository;
+        this.converterDTO = converterDTO;
+    }
+
     @Override
     public Mono<UserDetails> findByUsername(String username) {
+        return userRepository
+                .findById(username)
+                .switchIfEmpty(Mono.error(new UserNotFoundException(
+                        getFormattedMessage("User with username %s not found", username)))
+                )
+                .map(user -> UserDetailsImpl
+                        .builder()
+                        .user(user)
+                        .build()
+                );
+    }
+
+    @Override
+    public Mono<UserDTO> save(UserDTO userDto) {
+        return Mono.just(converterDTO.convertToEntity(userDto, User.class))
+                .map(user -> userRepository.save(user))
+                .map(user -> converterDTO.convertToEntity(user, UserDTO.class));
+    }
+
+    @Override
+    public Mono<UserDTO> update(UserDTO userDto) {
+        return null;
+    }
+
+    @Override
+    public Mono<Void> delete(UserDTO userDto) {
+        return null;
+    }
+
+    @Override
+    public Flux<UserDTO> findAll() {
         return null;
     }
 }
