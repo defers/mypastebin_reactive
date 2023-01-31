@@ -1,6 +1,5 @@
 package com.defers.mypastebin;
 
-import com.defers.mypastebin.domain.Paste;
 import com.defers.mypastebin.dto.converter.ConverterDTOImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,7 +16,7 @@ public class MypastebinApplication {
     public static void main(String[] args) {
         SpringApplication.run(MypastebinApplication.class, args);
         var converter = ConverterDTOImpl.builder().build();
-        String res = converter.convertToDto(new Paste());
+        //String res = converter.convertToDto(new Paste());
     }
 
 }

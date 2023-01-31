@@ -12,8 +12,8 @@ import javax.validation.constraints.NotNull;
 public class UserRole extends BaseEntity{
     @Id
     @OneToOne(cascade = CascadeType.ALL)
-    @Column(name = "user_name")
-    private String userName;
+    @JoinColumn(name = "username")
+    private String username;
 
     @Enumerated(value = EnumType.STRING)
     @NotNull

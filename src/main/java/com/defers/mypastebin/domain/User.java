@@ -20,6 +20,6 @@ public class User extends BaseEntity {
     private String email;
 
     @Enumerated(value = EnumType.STRING)
-    @OneToOne(mappedBy = "userName")
+    @OneToOne(mappedBy = "username")
     private Roles role;
 }

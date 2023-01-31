@@ -1,6 +1,5 @@
 package com.defers.mypastebin.domain.utils;
 
-import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.id.IdentifierGenerator;
 
@@ -11,6 +10,7 @@ public class PasteIdGenerator implements IdentifierGenerator {
     @Override
     public Serializable generate(SharedSessionContractImplementor sharedSessionContractImplementor,
                                  Object o) {
+        // TODO
         var rnd = new Random();
         return String.valueOf(rnd.nextLong());
     }

@@ -14,7 +14,7 @@ public class UserRoute {
     private final String basePattern = "/users";
 
     @Bean
-    public RouterFunction<ServerResponse> routes(UserHandler userHandler) {
+    public RouterFunction<ServerResponse> userRoutes(UserHandler userHandler) {
         return RouterFunctions
                 .route(RequestPredicates.GET(basePattern),
                         req -> userHandler.listAll(req))

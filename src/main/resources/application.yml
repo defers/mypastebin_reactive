@@ -18,7 +18,9 @@ spring:
       max-size: 2
   main:
     web-application-type: reactive
-
+  liquibase:
+    change-log: classpath:db/changelog/changelog-master.yml
+    
 logging:
   level:
     web: DEBUG
