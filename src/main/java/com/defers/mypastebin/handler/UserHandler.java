@@ -1,7 +1,7 @@
 package com.defers.mypastebin.handler;
 
 import com.defers.mypastebin.dto.UserDTO;
-import com.defers.mypastebin.security.UserDetailsServiceImpl;
+import com.defers.mypastebin.service.UserDetailsServiceImpl;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.stereotype.Component;

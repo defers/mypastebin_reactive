@@ -1,7 +1,9 @@
 package com.defers.mypastebin.configuration;
 
-import com.defers.mypastebin.domain.Paste;
+import com.defers.mypastebin.dto.PasteDTO;
+import com.defers.mypastebin.dto.converter.ConverterDTOImpl;
 import com.defers.mypastebin.repository.PasteRepository;
+import com.defers.mypastebin.service.PasteServiceImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -19,7 +21,11 @@ public class ApplicationConfiguration {
 
     @Bean
     public ModelMapper modelMapper() {
-        return new ModelMapper();
+        var modelMapper = new ModelMapper();
+//        modelMapper.getConfiguration()
+//                .setMatchingStrategy(MatchingStrategies.STRICT)
+//        .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE);
+        return modelMapper;
     }
 
     @Bean
@@ -28,8 +34,12 @@ public class ApplicationConfiguration {
     }
 
     private void createTest() {
-        Paste paste = new Paste();
-        Mono<Paste> res = pasteRepository.save(paste);
-        System.out.println("=============RESULT===========" + res.block().getId());
+        var service = new PasteServiceImpl(pasteRepository,
+                new ConverterDTOImpl(new ModelMapper()));
+
+
+        var paste = new PasteDTO(null, "Test1", "fdsdadas");
+        Mono<PasteDTO> res = service.save(paste);
+        System.out.println("=============RESULT===========" + res.block());
     }
 }

@@ -1,0 +1,42 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-tables_paste_user_role
+      author: defers
+      changes:
+        - createTable:
+            tableName: user_role
+            columns:
+              - column:
+                  name: username
+                  type: varchar(100)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: user_role_PK
+                    nullable: false
+                    foreignKeyName: fk_user_role_user
+                    references: user(username)
+                    deleteCascade: true
+              - column:
+                  name: role
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: paste
+            columns:
+              - column:
+                  name: id
+                  type: varchar(8)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: paste_pk
+              - column:
+                  name: text_description
+                  type: varchar(255)
+              - column:
+                  name: username
+                  type: varchar(50)
+                  constraints:
+                    nullable: true
+                    foreignKeyName: fk_paste_user
+                    references: user(username)

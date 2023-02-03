@@ -18,13 +18,22 @@ spring:
       max-size: 2
   main:
     web-application-type: reactive
+    allow-circular-references: true
   liquibase:
-    change-log: classpath:db/changelog/changelog-master.yml
-    
+    change-log: classpath:db/changelog/changelog-master.yaml
+    enabled: true
+    url: jdbc:postgresql://localhost:5430/mypastebin?schema=public
+    user: admin
+    password: admin
 logging:
   level:
+    liquibase: INFO
     web: DEBUG
     org:
       springframework:
         data:
           r2dbc: DEBUG
+app:
+  all-methods-log:
+    enabled: true
+

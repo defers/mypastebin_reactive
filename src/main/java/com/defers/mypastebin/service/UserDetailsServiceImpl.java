@@ -1,10 +1,11 @@
-package com.defers.mypastebin.security;
+package com.defers.mypastebin.service;
 
 import com.defers.mypastebin.domain.User;
 import com.defers.mypastebin.dto.UserDTO;
 import com.defers.mypastebin.dto.converter.ConverterDTO;
 import com.defers.mypastebin.exception.UserNotFoundException;
 import com.defers.mypastebin.repository.UserRepository;
+import com.defers.mypastebin.security.UserDetailsImpl;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,17 @@ public class UserDetailsServiceImpl implements ReactiveUserDetailsService, UserS
     public UserDetailsServiceImpl(UserRepository userRepository, ConverterDTO converterDTO) {
         this.userRepository = userRepository;
         this.converterDTO = converterDTO;
+    }
+
+    @Override
+    public Mono<User> findUserByUsername(String username) {
+        return userRepository.findById(username);
+    }
+
+    @Override
+    public Mono<UserDTO> findUserDTOByUsername(String username) {
+        return findUserByUsername(username)
+                .map(e -> converterDTO.convertToDto(e, UserDTO.class));
     }
 
     @Override

@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: change-table-paste-field-username
+      author: defers
+      changes:
+        - modifyDataType:
+            tableName: paste
+            columnName: id
+            newDataType: varchar(8)
+            autoIncrement: false
+        - dropSequence:
+            sequenceName: paste_id_seq

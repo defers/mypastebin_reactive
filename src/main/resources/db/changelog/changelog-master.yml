@@ -1,3 +1,0 @@
-databaseChangeLog:
-  - include:
-    file: db/changelog/changeset/31012023_init_tables.yml
