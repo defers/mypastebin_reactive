@@ -1,0 +1,23 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-tables
+      author: defers
+      changes:
+        - createTable:
+            tableName: user
+            columns:
+              - column:
+                  name: username
+                  type: varchar(100)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: user_pk
+                    nullable: false
+              - column:
+                  name: password
+                  type: varchar(100)
+              - column:
+                  name: email
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
