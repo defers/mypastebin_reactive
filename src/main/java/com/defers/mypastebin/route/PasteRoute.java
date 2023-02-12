@@ -23,47 +23,42 @@ public class PasteRoute {
 
     private final String basePattern = "/paste";
 
-    //TODO annotations
     @RouterOperations(
             {
-//                    @RouterOperation(path = "/swagger-demo/employee/{employeeId}"
-//                            , produces = {
-//                            MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.PUT, beanClass = EmployeeService.class, beanMethod = "updateEmployee",
-//                            operation = @Operation(operationId = "updateEmployee", responses = {
-//                                    @ApiResponse(responseCode = "200", description = "successful operation", content = @Content(schema = @Schema(implementation = Employee.class))),
-//                                    @ApiResponse(responseCode = "400", description = "Invalid Employee ID supplied"),
-//                                    @ApiResponse(responseCode = "404", description = "Employee not found")}, parameters = {
-//                                    @Parameter(in = ParameterIn.PATH, name = "employeeId")}
-//                                    , requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = Employee.class))))
-//                    ),
                     @RouterOperation(path = basePattern, produces = {
                             MediaType.TEXT_EVENT_STREAM_VALUE}, method = RequestMethod.POST, beanClass = PasteHandler.class, beanMethod = "save",
                             operation = @Operation(operationId = "save", responses = {
+                                    @ApiResponse(responseCode = "201", description = "successful operation", content = @Content(schema = @Schema(implementation = PasteDTO.class))),
+                                    @ApiResponse(responseCode = "400", description = "Invalid Paste details supplied")}
+                                    , requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = PasteDTO.class)))
+                            )),
+                    @RouterOperation(path = basePattern + "/{id}", produces = {
+                            MediaType.TEXT_EVENT_STREAM_VALUE}, method = RequestMethod.PUT, beanClass = PasteHandler.class, beanMethod = "update",
+                            operation = @Operation(operationId = "update", responses = {
+                                    @ApiResponse(responseCode = "200", description = "successful operation", content = @Content(schema = @Schema(implementation = PasteDTO.class))),
+                                    @ApiResponse(responseCode = "400", description = "Invalid Paste details supplied")}
+                                    , requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = PasteDTO.class)))
+                            )),
+                    @RouterOperation(path = basePattern + "/{id}", produces = {
+                            MediaType.TEXT_EVENT_STREAM_VALUE}, method = RequestMethod.DELETE, beanClass = PasteHandler.class, beanMethod = "delete",
+                            operation = @Operation(operationId = "delete", responses = {
+                                    @ApiResponse(responseCode = "204", description = "successful operation", content = @Content(schema = @Schema(implementation = PasteDTO.class))),
+                                    @ApiResponse(responseCode = "400", description = "Invalid Paste details supplied")}
+                                    , requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = PasteDTO.class)))
+                            )),
+                    @RouterOperation(path = basePattern, produces = {
+                            MediaType.TEXT_EVENT_STREAM_VALUE}, method = RequestMethod.GET, beanClass = PasteHandler.class, beanMethod = "listAll",
+                            operation = @Operation(operationId = "listAll", responses = {
                                     @ApiResponse(responseCode = "200", description = "successful operation", content = @Content(schema = @Schema(implementation = PasteDTO.class))),
                                     @ApiResponse(responseCode = "400", description = "Invalid Paste details supplied")}
                                     , requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = PasteDTO.class)))
                             ))
-//                    @RouterOperation(path = "/swagger-demo/employee/{employeeId}", produces = {
-//                            MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.DELETE, beanClass = PasteServiceImpl.class, beanMethod = "deleteEmployee"
-//                            , operation = @Operation(operationId = "deleteEmployee", responses = {
-//                            @ApiResponse(responseCode = "200", description = "successful operation", content = @Content(mediaType = "Boolean")),
-//                            @ApiResponse(responseCode = "400", description = "Invalid Employee ID supplied"),
-//                            @ApiResponse(responseCode = "404", description = "Employee not found")}, parameters = {
-//                            @Parameter(in = ParameterIn.PATH, name = "employeeId")}
-//                    )),
-//                    @RouterOperation(path = "/swagger-demo/employee/{employeeId}", produces = {
-//                            MediaType.APPLICATION_JSON_VALUE},
-//                            beanClass = EmployeeService.class, method = RequestMethod.GET, beanMethod = "getEmployee",
-//                            operation = @Operation(operationId = "getEmployee", responses = {
-//                                    @ApiResponse(responseCode = "200", description = "successful operation",
-//                                            content = @Content(schema = @Schema(implementation = Employee.class))),
-//                                    @ApiResponse(responseCode = "400", description = "Invalid Employee details supplied")},
-//                                    parameters = {@Parameter(in = ParameterIn.PATH, name = "employeeId")}
-//                            ))
 
             })
     @Bean
     public RouterFunction<ServerResponse> pasteRoutes(PasteHandler pasteHandler) {
+        int in = 4;
+        Object a = in;
         return RouterFunctions
                 .route(RequestPredicates.GET(basePattern),
                         req -> pasteHandler.listAll(req))

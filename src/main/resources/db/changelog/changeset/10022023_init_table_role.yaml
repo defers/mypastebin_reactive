@@ -1,0 +1,6 @@
+databaseChangeLog:
+  - changeSet:
+      id: table-role
+      author: defers
+  - include:
+      file: db/changelog/changeset/sql/10022023_init_table_role.sql
