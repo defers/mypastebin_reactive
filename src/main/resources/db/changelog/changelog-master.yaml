@@ -3,3 +3,5 @@ databaseChangeLog:
       file: db/changelog/changeset/31012023_init_table_user.yaml
   - include:
       file: db/changelog/changeset/02022023_init_tables_paste_user_role.yaml
+  - include:
+      file: db/changelog/changeset/10022023_init_table_role.yaml
