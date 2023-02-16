@@ -1,20 +1,5 @@
 package com.defers.mypastebin.exception;
 
-//// TODO
-//@Configuration
-//public class GlobalExceptionHandler {
-//    @Bean
-//    public WebExceptionHandler exceptionHandler() {
-//        return (ServerWebExchange exchange, Throwable ex) -> {
-//            if (ex instanceof UserNotFoundException) {
-//                exchange.getResponse().setStatusCode(HttpStatus.NOT_FOUND);
-//                return exchange.getResponse().setComplete();
-//            }
-//            return Mono.error(ex);
-//        };
-//    }
-//}
-
 import com.defers.mypastebin.dto.ApiResponse;
 import com.defers.mypastebin.enums.ApiResponseStatus;
 import org.springframework.boot.autoconfigure.web.WebProperties.Resources;
@@ -35,8 +20,7 @@ import java.util.Map;
 
 @Component
 @Order(-2)
-public class GlobalExceptionHandler extends
-        AbstractErrorWebExceptionHandler {
+public class GlobalExceptionHandler extends AbstractErrorWebExceptionHandler {
     public GlobalExceptionHandler(ErrorAttributes errorAttributes,
                                   Resources resources,
                                   ApplicationContext applicationContext,
@@ -46,15 +30,12 @@ public class GlobalExceptionHandler extends
     }
 
     @Override
-    protected RouterFunction<ServerResponse> getRoutingFunction(
-            ErrorAttributes errorAttributes) {
-
+    protected RouterFunction<ServerResponse> getRoutingFunction(ErrorAttributes errorAttributes) {
         return RouterFunctions.route(
                 RequestPredicates.all(), this::renderErrorResponse);
     }
 
     private Mono<ServerResponse> renderErrorResponse(ServerRequest request) {
-
         Map<String, Object> errorPropertiesMap = getErrorAttributes(request, ErrorAttributeOptions.defaults());
 
         return ServerResponse.status(HttpStatus.BAD_REQUEST)
@@ -64,7 +45,6 @@ public class GlobalExceptionHandler extends
                                 .status(ApiResponseStatus.ERROR)
                                 .messageError(String.valueOf(errorPropertiesMap.get("message")))
                                 .build()
-                        //errorPropertiesMap
                 ));
     }
 }

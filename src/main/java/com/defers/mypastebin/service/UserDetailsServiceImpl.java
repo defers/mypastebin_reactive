@@ -18,6 +18,7 @@ import java.util.Set;
 
 @Slf4j
 @Service
+//@Transactional(readOnly = true)
 public class UserDetailsServiceImpl implements UserService {//ReactiveUserDetailsService, UserService {
     private final UserRepository userRepository;
     private final ConverterDTO converterDTO;
@@ -64,6 +65,7 @@ public class UserDetailsServiceImpl implements UserService {//ReactiveUserDetail
 //                );
 //    }
 
+    //@Transactional(readOnly = false)
     @Override
     public Mono<UserDTOResponse> save(UserDTORequest userDto) {
         User userEntity = converterDTO.convertToEntity(userDto, User.class);
@@ -79,6 +81,7 @@ public class UserDetailsServiceImpl implements UserService {//ReactiveUserDetail
         return userDTO;
     }
 
+    //@Transactional(readOnly = false)
     @Override
     public Mono<UserDTOResponse> update(UserDTORequest userDto) {
         Mono<User> userEntity = findUserByUsername(userDto.getUsername())
@@ -92,6 +95,7 @@ public class UserDetailsServiceImpl implements UserService {//ReactiveUserDetail
         return userDTO;
     }
 
+    //@Transactional(readOnly = false)
     @Override
     public Mono<Void> delete(String username) {
         return findUserByUsername(username)
