@@ -6,6 +6,8 @@ public class UserQuery {
                 "u.username u_username,\n" +
                 "u.password u_password,\n" +
                 "u.email u_email,\n" +
+                "u.created_date u_created_date,\n" +
+                "u.updated_date u_updated_date,\n" +
                 "r.id r_id,\n" +
                 "r.name r_name \n" +
                 "FROM public.user u \n" +

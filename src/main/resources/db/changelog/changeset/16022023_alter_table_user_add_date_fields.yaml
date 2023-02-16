@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: alter-table-user-add-field-created_date
+      author: defers
+      addColumn:
+        tableName: user
+        column:
+          name: created_date
+          type: timestamp
+          defaultValueComputed: CURRENT_TIMESTAMP
+        constraints:
+          nullable: false
+          updatable: false
+  - changeSet:
+      id: alter-table-user-add-field-updated_date
+      author: defers
+      addColumn:
+        tableName: user
+        column:
+          name: updated_date
+          type: timestamp
+          defaultValueComputed: CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        constraints:
+          nullable: false
+          updatable: true

@@ -15,6 +15,8 @@ package com.defers.mypastebin.exception;
 //    }
 //}
 
+import com.defers.mypastebin.dto.ApiResponse;
+import com.defers.mypastebin.enums.ApiResponseStatus;
 import org.springframework.boot.autoconfigure.web.WebProperties.Resources;
 import org.springframework.boot.autoconfigure.web.reactive.error.AbstractErrorWebExceptionHandler;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
@@ -57,6 +59,12 @@ public class GlobalExceptionHandler extends
 
         return ServerResponse.status(HttpStatus.BAD_REQUEST)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue(errorPropertiesMap));
+                .body(BodyInserters.fromValue(
+                        ApiResponse.builder()
+                                .status(ApiResponseStatus.ERROR)
+                                .messageError(String.valueOf(errorPropertiesMap.get("message")))
+                                .build()
+                        //errorPropertiesMap
+                ));
     }
 }

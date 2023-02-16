@@ -5,22 +5,30 @@ import com.defers.mypastebin.dto.UserDTORequest;
 import com.defers.mypastebin.dto.UserDTOResponse;
 import com.defers.mypastebin.dto.converter.ConverterDTO;
 import com.defers.mypastebin.exception.UserNotFoundException;
+import com.defers.mypastebin.exception.ValidationException;
 import com.defers.mypastebin.repository.UserRepository;
 import com.defers.mypastebin.util.MessagesUtils;
+import com.defers.mypastebin.validator.ObjectValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.Set;
 
 @Slf4j
 @Service
 public class UserDetailsServiceImpl implements UserService {//ReactiveUserDetailsService, UserService {
     private final UserRepository userRepository;
     private final ConverterDTO converterDTO;
+    private final ObjectValidator<User> objectValidator;
 
-    public UserDetailsServiceImpl(UserRepository userRepository, ConverterDTO converterDTO) {
+    public UserDetailsServiceImpl(UserRepository userRepository,
+                                  ConverterDTO converterDTO,
+                                  ObjectValidator<User> objectValidator) {
         this.userRepository = userRepository;
         this.converterDTO = converterDTO;
+        this.objectValidator = objectValidator;
     }
 
     @Override
@@ -59,6 +67,11 @@ public class UserDetailsServiceImpl implements UserService {//ReactiveUserDetail
     @Override
     public Mono<UserDTOResponse> save(UserDTORequest userDto) {
         User userEntity = converterDTO.convertToEntity(userDto, User.class);
+        Set<String> violations = objectValidator.validate(userEntity);
+        if (violations.size() > 0) {
+            return Mono.error(new ValidationException(violations));
+        }
+
         Mono<User> userMono = userRepository.save(userEntity);
         Mono<UserDTOResponse> userDTO = userMono.map(
                 user -> converterDTO.convertToDto(user, UserDTOResponse.class)
