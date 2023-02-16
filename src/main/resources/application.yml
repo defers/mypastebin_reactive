@@ -8,9 +8,8 @@ spring:
   config:
     activate:
       on-profile: dev
-
   r2dbc:
-    url: r2dbc:postgresql://localhost:5430/mypastebin?schema=public
+    url: r2dbc:postgresql://localhost:5430/mypastebin?schema=public&serverTimezone=UTC
     password: admin
     username: admin
     pool:
@@ -29,6 +28,8 @@ spring:
     password: admin
 logging:
   level:
+    io.r2dbc.postgresql.QUERY: DEBUG
+    io.r2dbc.postgresql.PARAM: DEBUG
     liquibase: INFO
     web: DEBUG
     org:
