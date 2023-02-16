@@ -17,6 +17,7 @@ spring:
       enabled: true
       initial-size: 2
       max-size: 2
+    name: mypastebin
   main:
     web-application-type: reactive
     allow-circular-references: true
@@ -35,8 +36,12 @@ logging:
         data:
           r2dbc: DEBUG
 app:
+  database:
+    port: 5430
+    schema: public
   all-methods-log:
     enabled: true
+  host: localhost
 springdoc:
   api-docs:
     path: /swagger-doc/v3/api-docs

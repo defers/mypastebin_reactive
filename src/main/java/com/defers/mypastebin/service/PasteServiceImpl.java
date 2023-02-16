@@ -13,9 +13,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import javax.transaction.Transactional;
-
 @Data
+@org.springframework.transaction.annotation.Transactional(readOnly = true)
 @Service
 public class PasteServiceImpl implements PasteService {
     private final PasteRepository pasteRepository;
@@ -28,14 +27,12 @@ public class PasteServiceImpl implements PasteService {
         this.converterDTO = converterDTO;
     }
 
-    @Transactional
     @Override
     public Flux<PasteDTO> findAll() {
         return pasteRepository.findAll()
                 .map(e -> converterDTO.convertToDto(e, PasteDTO.class));
     }
 
-    @Transactional
     @Override
     public Mono<PasteDTO> findById(String id) {
         return pasteRepository.findById(id)
@@ -48,7 +45,7 @@ public class PasteServiceImpl implements PasteService {
                 );
     }
 
-    @Transactional
+    @org.springframework.transaction.annotation.Transactional(readOnly = false)
     @Override
     public Mono<PasteDTO> save(PasteDTO paste) {
         return Mono.just(paste)
@@ -60,7 +57,7 @@ public class PasteServiceImpl implements PasteService {
                 .map(e -> converterDTO.convertToDto(e, PasteDTO.class));
     }
 
-    @Transactional
+    @org.springframework.transaction.annotation.Transactional(readOnly = false)
     @Override
     public Mono<PasteDTO> update(PasteDTO paste, String id) {
         return pasteRepository.findById(id)
@@ -72,7 +69,7 @@ public class PasteServiceImpl implements PasteService {
                 .map(e -> converterDTO.convertToDto(e, PasteDTO.class));
     }
 
-    @Transactional
+    @org.springframework.transaction.annotation.Transactional(readOnly = false)
     @Override
     public Mono<Void> delete(PasteDTO paste, String id) {
         return pasteRepository.findById(id)

@@ -1,9 +1,13 @@
 package com.defers.mypastebin.repository;
 
 import com.defers.mypastebin.domain.User;
-import org.springframework.data.r2dbc.repository.R2dbcRepository;
-import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-@Repository
-public interface UserRepository extends R2dbcRepository<User, String> {
+public interface UserRepository {
+    Flux<User> findAll();
+    Mono<User> findUserByUsername(String username);
+    Mono<User> save(User user);
+    Mono<User> update(User user);
+    Mono<Void> delete(String username);
 }

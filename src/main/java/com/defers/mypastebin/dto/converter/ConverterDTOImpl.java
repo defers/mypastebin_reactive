@@ -3,7 +3,7 @@ package com.defers.mypastebin.dto.converter;
 import lombok.Builder;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Data
@@ -13,7 +13,8 @@ public class ConverterDTOImpl implements ConverterDTO {
 
     private final ModelMapper modelMapper;
 
-    public ConverterDTOImpl(@Lazy ModelMapper modelMapper) {
+    @Autowired
+    public ConverterDTOImpl(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
     }
 

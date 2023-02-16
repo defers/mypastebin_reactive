@@ -8,7 +8,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.reactive.config.EnableWebFlux;
 
 @SpringBootApplication
@@ -20,7 +19,6 @@ import org.springframework.web.reactive.config.EnableWebFlux;
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 @EnableCaching
 @EnableR2dbcRepositories
-@EnableTransactionManagement
 @EnableWebFlux
 public class MypastebinApplication {
 
