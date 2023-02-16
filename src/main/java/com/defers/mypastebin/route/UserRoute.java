@@ -18,12 +18,14 @@ public class UserRoute {
         return RouterFunctions
                 .route(RequestPredicates.GET(basePattern),
                         req -> userHandler.listAll(req))
+                .andRoute(RequestPredicates.GET(basePattern + "/{username}"),
+                        req -> userHandler.findUserByUserName(req.pathVariable("username")))
                 .andRoute(RequestPredicates.POST(basePattern),
                         req -> userHandler.save(req))
                 .andRoute(RequestPredicates.PUT(basePattern + "/{username}"),
                         req -> userHandler.update(req))
                 .andRoute(RequestPredicates.DELETE(basePattern + "/{username}"),
-                        req -> userHandler.delete(req));
+                        req -> userHandler.delete(req.pathVariable("username")));
     }
 
 }

@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @Entity
 @Table(name = "user_role")
-public class UserRole extends BaseEntity{
+public class UserRole_OLD extends BaseEntity{
     @Id
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "username")

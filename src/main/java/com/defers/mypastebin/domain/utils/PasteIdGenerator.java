@@ -4,7 +4,9 @@ import java.util.UUID;
 
 public class PasteIdGenerator{
     public static String generate() {
-        // TODO
-        return UUID.randomUUID().toString().replace("-", "").substring(0, 7);
+        return UUID.randomUUID()
+                .toString()
+                .replace("-", "")
+                .substring(0, 8);
     }
 }

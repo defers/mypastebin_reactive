@@ -1,0 +1,30 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-table-user-roles
+      author: defers
+      changes:
+        - createTable:
+            tableName: user_roles
+            primaryKey:
+              columnNames: username, role_id
+              constraintName: user_roles_pk
+            columns:
+              - column:
+                  name: username
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_user_roles_username
+                    references: user(username)
+              - column:
+                  name: role_id
+                  type: integer
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_user_roles_role_id
+                    references: role(id)
+  - changeSet:
+      id: drop-table-user_role
+      author: defers
+      dropTable:
+        tableName: user_role
