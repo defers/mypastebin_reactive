@@ -32,8 +32,8 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Mono<User> findUserByUsername(String username) {
-        return databaseClient.sql(UserQuery.findUserByUsername())
+    public Mono<User> findUserByUsername(String username, boolean blockForUpdate) {
+        return databaseClient.sql(UserQuery.findUserByUsername(blockForUpdate))
                 .bind("username", username)
                 .fetch()
                 .all()

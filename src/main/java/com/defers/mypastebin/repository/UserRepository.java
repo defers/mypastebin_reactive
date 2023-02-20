@@ -6,7 +6,7 @@ import reactor.core.publisher.Mono;
 
 public interface UserRepository {
     Flux<User> findAll();
-    Mono<User> findUserByUsername(String username);
+    Mono<User> findUserByUsername(String username, boolean blockForUpdate);
     Mono<User> save(User user);
     Mono<User> update(User user);
     Mono<Void> delete(String username);

@@ -34,9 +34,6 @@ public class UserHandler {
                                 .status(ApiResponseStatus.OK)
                                 .responseData(e)
                                 .build()), ApiResponse.class));
-//        return ServerResponse.ok()
-//                .contentType(MediaType.APPLICATION_NDJSON)
-//                .body(userService.findAll(), UserDTOResponse.class);
     }
 
     public Mono<ServerResponse> save(ServerRequest req) {
@@ -44,16 +41,14 @@ public class UserHandler {
         Mono<ServerResponse> notFound = ServerResponse.notFound().build();
 
         return userDtoMono
-                //.map(userDtoRequest -> userService.save(userDtoRequest))
                 .flatMap(userDtoRequest -> userService.save(userDtoRequest))
                 .flatMap(e -> ServerResponse
-                                .created(req.uri())
-                                .contentType(MediaType.APPLICATION_NDJSON)
-                                .body(Mono.just(ApiResponse.builder()
-                                        .status(ApiResponseStatus.OK)
-                                        .responseData(e)
-                                        .build()), ApiResponse.class)
-                        //.body(BodyInserters.fromPublisher(e, UserDTOResponse.class))
+                        .created(req.uri())
+                        .contentType(MediaType.APPLICATION_NDJSON)
+                        .body(Mono.just(ApiResponse.builder()
+                                .status(ApiResponseStatus.OK)
+                                .responseData(e)
+                                .build()), ApiResponse.class)
                 )
                 .switchIfEmpty(notFound);
     }
@@ -61,11 +56,10 @@ public class UserHandler {
     public Mono<ServerResponse> update(ServerRequest req) {
         return req
                 .bodyToMono(UserDTORequest.class)
-                .map(userDTO -> userService.update(userDTO))
+                .flatMap(userDTO -> userService.update(userDTO))
                 .flatMap(userDTO -> ServerResponse
                         .ok()
                         .contentType(MediaType.APPLICATION_NDJSON)
-                        //.body(userDTO, UserDTOResponse.class)
                         .body(Mono.just(ApiResponse.builder()
                                 .status(ApiResponseStatus.OK)
                                 .responseData(userDTO)
@@ -83,14 +77,11 @@ public class UserHandler {
                                 .responseData(MessagesUtils
                                         .getFormattedMessage("User with username %s has deleted", username))
                                 .build()), ApiResponse.class));
-//                .flatMap(e -> ServerResponse.noContent()
-//                        .build()
-//                );
     }
 
     public Mono<ServerResponse> findUserByUserName(String username) {
         Mono<ServerResponse> notFound = ServerResponse.notFound().build();
-        return userService.findUserDTOByUsername(username)
+        return userService.findUserDTOByUsername(username, false)
                 .flatMap(userDTOResponse -> ServerResponse
                         .ok()
                         .contentType(MediaType.APPLICATION_NDJSON)
@@ -98,11 +89,6 @@ public class UserHandler {
                                 .status(ApiResponseStatus.OK)
                                 .responseData(userDTOResponse)
                                 .build()), ApiResponse.class))
-//                .flatMap(e -> ServerResponse
-//                        .ok()
-//                        .contentType(MediaType.APPLICATION_NDJSON)
-//                        .body(Mono.just(e), UserDTOResponse.class)
-//                )
                 .switchIfEmpty(notFound)
                 .doOnError(e -> log.info("=====> UserHandler.findUserByUserName error ===== {}", e.getMessage()))
                 .doOnSuccess(userDTO -> log.info("=====> UserHandler.findUserByUserName value ===== {}", userDTO));

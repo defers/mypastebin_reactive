@@ -14,7 +14,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Data
-@org.springframework.transaction.annotation.Transactional(readOnly = true)
 @Service
 public class PasteServiceImpl implements PasteService {
     private final PasteRepository pasteRepository;
@@ -35,7 +34,7 @@ public class PasteServiceImpl implements PasteService {
 
     @Override
     public Mono<PasteDTO> findById(String id) {
-        return pasteRepository.findById(id)
+        return pasteRepository.findById(id, false)
                 .map(e -> converterDTO.convertToDto(e, PasteDTO.class))
                 .switchIfEmpty(
                         Mono.error(
@@ -45,7 +44,6 @@ public class PasteServiceImpl implements PasteService {
                 );
     }
 
-    @org.springframework.transaction.annotation.Transactional(readOnly = false)
     @Override
     public Mono<PasteDTO> save(PasteDTO paste) {
         return Mono.just(paste)
@@ -57,10 +55,9 @@ public class PasteServiceImpl implements PasteService {
                 .map(e -> converterDTO.convertToDto(e, PasteDTO.class));
     }
 
-    @org.springframework.transaction.annotation.Transactional(readOnly = false)
     @Override
     public Mono<PasteDTO> update(PasteDTO paste, String id) {
-        return pasteRepository.findById(id)
+        return pasteRepository.findById(id, true)
                 .switchIfEmpty(Mono.error(
                         new PasteNotFoundException(
                                 MessagesUtils.getFormattedMessage("Paste with id %s not found", id)))
@@ -69,17 +66,16 @@ public class PasteServiceImpl implements PasteService {
                 .map(e -> converterDTO.convertToDto(e, PasteDTO.class));
     }
 
-    @org.springframework.transaction.annotation.Transactional(readOnly = false)
     @Override
     public Mono<Void> delete(PasteDTO paste, String id) {
-        return pasteRepository.findById(id)
+        return pasteRepository.findById(id, true)
                 .switchIfEmpty(Mono.error(
                         new PasteNotFoundException(
                                 MessagesUtils.getFormattedMessage("Paste with id %s not found", id)))
 
                 )
                 .map(e -> converterDTO.convertToEntity(e, Paste.class))
-                .doOnNext(e -> pasteRepository.delete(e))
+                .doOnNext(e -> pasteRepository.delete(id))
                 .thenEmpty(Mono.empty());
     }
 }

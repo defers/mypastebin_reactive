@@ -11,7 +11,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 @Component
 public class UserRoute {
 
-    private final String basePattern = "/users";
+    private final String basePattern = "/v1/users";
 
     @Bean
     public RouterFunction<ServerResponse> userRoutes(UserHandler userHandler) {

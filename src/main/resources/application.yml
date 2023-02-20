@@ -48,3 +48,4 @@ springdoc:
     path: /swagger-doc/v3/api-docs
   swagger-ui:
     path: /swagger-doc/swagger-ui.html
+

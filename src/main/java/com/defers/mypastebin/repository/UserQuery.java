@@ -29,8 +29,11 @@ public class UserQuery {
         return query;
     }
 
-    public static String findUserByUsername() {
+    public static String findUserByUsername(boolean blockForUpdate) {
         String query = findAll() + " WHERE u.username = :username";
+        if (blockForUpdate) {
+            query += " FOR UPDATE";
+        }
         return query;
     }
 

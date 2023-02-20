@@ -7,6 +7,12 @@ import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+
+// TODO add Elastic search logstash kibana
+// TODO Dockerfile
+// TODO Tests
+// TODO security
+// TODO Redis cache
 @Configuration
 public class ApplicationConfiguration {
 

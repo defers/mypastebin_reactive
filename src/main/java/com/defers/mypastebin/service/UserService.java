@@ -8,8 +8,8 @@ import reactor.core.publisher.Mono;
 
 public interface UserService {
     Flux<UserDTOResponse> findAll();
-    Mono<User> findUserByUsername(String username);
-    Mono<UserDTOResponse> findUserDTOByUsername(String username);
+    Mono<User> findUserByUsername(String username, boolean blockForUpdate);
+    Mono<UserDTOResponse> findUserDTOByUsername(String username, boolean blockForUpdate);
     Mono<UserDTOResponse> save(UserDTORequest user);
     Mono<UserDTOResponse> update(UserDTORequest user);
     Mono<Void> delete(String username);
