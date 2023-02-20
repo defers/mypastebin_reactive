@@ -2,17 +2,16 @@ package com.defers.mypastebin.domain;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
 @SuperBuilder
 @Entity
 @Table(name = "paste")
@@ -25,6 +24,7 @@ public class Paste extends BaseEntity {
     @NotNull(message = "Text description must not be null")
     private String textDescription;
 
-    @Column(name = "username")
+    @JoinColumn(name = "username")
+    @ManyToOne(cascade = {CascadeType.ALL})
     private User user;
 }

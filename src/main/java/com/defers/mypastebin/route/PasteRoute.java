@@ -57,8 +57,6 @@ public class PasteRoute {
             })
     @Bean
     public RouterFunction<ServerResponse> pasteRoutes(PasteHandler pasteHandler) {
-        int in = 4;
-        Object a = in;
         return RouterFunctions
                 .route(RequestPredicates.GET(basePattern),
                         req -> pasteHandler.listAll(req))

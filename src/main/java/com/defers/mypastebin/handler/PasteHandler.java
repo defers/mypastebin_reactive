@@ -38,7 +38,7 @@ public class PasteHandler {
         return req.bodyToMono(PasteDTO.class)
                 .doOnNext(e -> pasteService.save(e))
                 .flatMap(e -> ServerResponse.created(req.uri())
-                        .body(e, PasteDTO.class)
+                        .body(Mono.just(e), PasteDTO.class)
                 );
     }
 

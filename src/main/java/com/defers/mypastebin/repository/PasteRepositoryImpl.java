@@ -3,6 +3,7 @@ package com.defers.mypastebin.repository;
 import com.defers.mypastebin.domain.Paste;
 import com.defers.mypastebin.exception.PasteNotFoundException;
 import com.defers.mypastebin.repository.converter.PasteConverter;
+import com.defers.mypastebin.repository.query.PasteQuery;
 import com.defers.mypastebin.util.MessagesUtils;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +46,13 @@ public class PasteRepositoryImpl implements PasteRepository {
 
     @Override
     public Mono<Paste> save(Paste paste) {
-        return null;
+        return databaseClient.sql(PasteQuery.save())
+                .bind("id", paste.getId())
+                .bind("text_description", paste.getTextDescription())
+                .bind("username", paste.getUser() != null ? paste.getUser().getUsername() : null)
+                .fetch()
+                .first()
+                .thenReturn(paste);
     }
 
     @Override

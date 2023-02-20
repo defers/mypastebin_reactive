@@ -3,6 +3,7 @@ package com.defers.mypastebin.repository;
 import com.defers.mypastebin.domain.User;
 import com.defers.mypastebin.exception.UserNotFoundException;
 import com.defers.mypastebin.repository.converter.UserConverter;
+import com.defers.mypastebin.repository.query.UserQuery;
 import com.defers.mypastebin.util.MessagesUtils;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
