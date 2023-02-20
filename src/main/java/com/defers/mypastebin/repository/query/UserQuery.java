@@ -1,4 +1,4 @@
-package com.defers.mypastebin.repository;
+package com.defers.mypastebin.repository.query;
 
 public class UserQuery {
     public static String findAll() {

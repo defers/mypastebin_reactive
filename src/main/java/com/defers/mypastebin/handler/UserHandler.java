@@ -4,6 +4,7 @@ import com.defers.mypastebin.dto.ApiResponse;
 import com.defers.mypastebin.dto.UserDTORequest;
 import com.defers.mypastebin.enums.ApiResponseStatus;
 import com.defers.mypastebin.service.UserDetailsServiceImpl;
+import com.defers.mypastebin.util.HttpUtils;
 import com.defers.mypastebin.util.MessagesUtils;
 import lombok.Builder;
 import lombok.Data;
@@ -30,10 +31,9 @@ public class UserHandler {
                 .flatMap(e -> ServerResponse
                         .ok()
                         .contentType(MediaType.APPLICATION_NDJSON)
-                        .body(Mono.just(ApiResponse.builder()
-                                .status(ApiResponseStatus.OK)
-                                .responseData(e)
-                                .build()), ApiResponse.class));
+                        .body(Mono.just(
+                                HttpUtils.createApiResponse(e, ApiResponseStatus.OK)
+                        ), ApiResponse.class));
     }
 
     public Mono<ServerResponse> save(ServerRequest req) {
@@ -45,10 +45,9 @@ public class UserHandler {
                 .flatMap(e -> ServerResponse
                         .created(req.uri())
                         .contentType(MediaType.APPLICATION_NDJSON)
-                        .body(Mono.just(ApiResponse.builder()
-                                .status(ApiResponseStatus.OK)
-                                .responseData(e)
-                                .build()), ApiResponse.class)
+                        .body(Mono.just(
+                                HttpUtils.createApiResponse(e, ApiResponseStatus.OK)
+                        ), ApiResponse.class)
                 )
                 .switchIfEmpty(notFound);
     }
@@ -60,11 +59,9 @@ public class UserHandler {
                 .flatMap(userDTO -> ServerResponse
                         .ok()
                         .contentType(MediaType.APPLICATION_NDJSON)
-                        .body(Mono.just(ApiResponse.builder()
-                                .status(ApiResponseStatus.OK)
-                                .responseData(userDTO)
-                                .build()), ApiResponse.class)
-                );
+                        .body(Mono.just(
+                                HttpUtils.createApiResponse(userDTO, ApiResponseStatus.OK)
+                        ), ApiResponse.class));
     }
 
     public Mono<ServerResponse> delete(String username) {
@@ -72,11 +69,12 @@ public class UserHandler {
                 .then(ServerResponse
                         .accepted()
                         .contentType(MediaType.APPLICATION_NDJSON)
-                        .body(Mono.just(ApiResponse.builder()
-                                .status(ApiResponseStatus.OK)
-                                .responseData(MessagesUtils
-                                        .getFormattedMessage("User with username %s has deleted", username))
-                                .build()), ApiResponse.class));
+                        .body(Mono.just(
+                                HttpUtils.createApiResponse(
+                                        MessagesUtils.getFormattedMessage("User with username %s has deleted", username),
+                                        ApiResponseStatus.OK
+                                )
+                        ), ApiResponse.class));
     }
 
     public Mono<ServerResponse> findUserByUserName(String username) {
@@ -85,10 +83,9 @@ public class UserHandler {
                 .flatMap(userDTOResponse -> ServerResponse
                         .ok()
                         .contentType(MediaType.APPLICATION_NDJSON)
-                        .body(Mono.just(ApiResponse.builder()
-                                .status(ApiResponseStatus.OK)
-                                .responseData(userDTOResponse)
-                                .build()), ApiResponse.class))
+                        .body(Mono.just(
+                                HttpUtils.createApiResponse(userDTOResponse, ApiResponseStatus.OK)
+                        ), ApiResponse.class))
                 .switchIfEmpty(notFound)
                 .doOnError(e -> log.info("=====> UserHandler.findUserByUserName error ===== {}", e.getMessage()))
                 .doOnSuccess(userDTO -> log.info("=====> UserHandler.findUserByUserName value ===== {}", userDTO));

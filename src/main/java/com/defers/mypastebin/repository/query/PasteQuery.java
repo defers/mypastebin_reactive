@@ -1,8 +1,8 @@
-package com.defers.mypastebin.repository;
+package com.defers.mypastebin.repository.query;
 
 public class PasteQuery {
     public static String findAll() {
-        String query = "SELECT " +
+        var query = "SELECT " +
                 "p.id p_id, " +
                 "p.text_description p_text_description, " +
                 "p.username p_username, " +
@@ -20,10 +20,16 @@ public class PasteQuery {
     }
 
     public static String findById(boolean blockForUpdate) {
-        String query = findAll() + " WHERE p.id = :id";
+        var query = findAll() + " WHERE p.id = :id";
         if (blockForUpdate) {
             query += " FOR UPDATE";
         }
+        return query;
+    }
+
+    public static String save() {
+        var query = "INSERT INTO paste (id, text_description, username) " +
+                "VALUES (:id, :text_description, :username)";
         return query;
     }
 }
