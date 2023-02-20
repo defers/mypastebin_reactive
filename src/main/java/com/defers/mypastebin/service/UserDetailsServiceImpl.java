@@ -66,6 +66,11 @@ public class UserDetailsServiceImpl implements ReactiveUserDetailsService, UserS
         return null;
     }
 
+    // Test GIT
+    public void someTestMethod() {
+        System.out.println("Hello Test!");
+    }
+    
     @Override
     public Flux<UserDTO> findAll() {
         return null;
