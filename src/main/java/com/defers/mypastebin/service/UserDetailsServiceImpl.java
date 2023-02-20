@@ -108,6 +108,11 @@ public class UserDetailsServiceImpl implements UserService {//ReactiveUserDetail
                 .then(userRepository.delete(username));
     }
 
+    // Test GIT
+    public void someTestMethod() {
+        System.out.println("Hello Test!");
+    }
+    
     @Override
     public Flux<UserDTOResponse> findAll() {
         return userRepository.findAll()
