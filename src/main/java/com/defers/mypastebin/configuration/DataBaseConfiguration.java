@@ -7,8 +7,11 @@ import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.r2dbc.connection.R2dbcTransactionManager;
 import org.springframework.r2dbc.core.DatabaseClient;
+import org.springframework.transaction.ReactiveTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.reactive.TransactionalOperator;
 
 @Data
 @EnableTransactionManagement
@@ -48,5 +51,16 @@ public class DataBaseConfiguration {
                 .connectionFactory(connectionFactory)
                 .namedParameters(true)
                 .build();
+    }
+
+    @Bean
+    public ReactiveTransactionManager transactionManager(ConnectionFactory connectionFactory) {
+        var txm = new R2dbcTransactionManager(connectionFactory);
+        return txm;
+    }
+
+    @Bean
+    public TransactionalOperator transactionalOperator(ReactiveTransactionManager reactiveTransactionManager) {
+        return TransactionalOperator.create(reactiveTransactionManager);
     }
 }

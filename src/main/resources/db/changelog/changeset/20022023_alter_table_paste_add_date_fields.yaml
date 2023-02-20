@@ -1,0 +1,34 @@
+databaseChangeLog:
+  - changeSet:
+      id: alter-table-paste-add-field-created_date
+      author: defers
+      addColumn:
+        tableName: paste
+        column:
+          name: created_date
+          type: timestamp
+          defaultValueComputed: CURRENT_TIMESTAMP
+        constraints:
+          nullable: false
+          updatable: false
+  - changeSet:
+      id: alter-table-paste-add-field-updated_date
+      author: defers
+      addColumn:
+        tableName: paste
+        column:
+          name: updated_date
+          type: timestamp
+          defaultValueComputed: CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        constraints:
+          nullable: false
+          updatable: true
+  - changeSet:
+      id: alter-table-paste-add-index-username
+      author: defers
+      createIndex:
+        tableName: paste
+        indexName: idx_paste_username
+        columns:
+          - column:
+              name: username

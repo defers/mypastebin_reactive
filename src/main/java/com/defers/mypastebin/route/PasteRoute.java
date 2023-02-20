@@ -21,7 +21,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 @Component
 public class PasteRoute {
 
-    private final String basePattern = "/paste";
+    private final String basePattern = "/v1/paste";
 
     @RouterOperations(
             {
@@ -62,9 +62,11 @@ public class PasteRoute {
         return RouterFunctions
                 .route(RequestPredicates.GET(basePattern),
                         req -> pasteHandler.listAll(req))
+                .andRoute(RequestPredicates.GET(basePattern + "/{id}"),
+                        req -> pasteHandler.findById(req))
                 .andRoute(RequestPredicates.POST(basePattern),
                         req -> pasteHandler.save(req))
-                .andRoute((RequestPredicates.PUT(basePattern + "/{id}")),
+                .andRoute(RequestPredicates.PUT(basePattern + "/{id}"),
                         req -> pasteHandler.update(req))
                 .andRoute(RequestPredicates.DELETE(basePattern + "/{id}"),
                         req -> pasteHandler.delete(req));

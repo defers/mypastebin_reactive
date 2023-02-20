@@ -9,4 +9,6 @@ databaseChangeLog:
       file: db/changelog/changeset/13022023_init_table_user_roles.yaml
   - include:
       file: db/changelog/changeset/16022023_alter_table_user_add_date_fields.yaml
+  - include:
+      file: db/changelog/changeset/20022023_alter_table_paste_add_date_fields.yaml
 

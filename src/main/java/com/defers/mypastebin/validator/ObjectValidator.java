@@ -11,10 +11,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
-public class ObjectValidator<T> {
+public class ObjectValidator<T> implements com.defers.mypastebin.validator.Validator<T> {
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final Validator validator = factory.getValidator();
 
+    @Override
     public Set<String> validate(T objectToValidate) {
         Set<ConstraintViolation<T>> violations = validator.validate(objectToValidate);
         if (violations.size() != 0) {

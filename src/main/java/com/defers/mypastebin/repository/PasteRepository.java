@@ -1,9 +1,13 @@
 package com.defers.mypastebin.repository;
 
 import com.defers.mypastebin.domain.Paste;
-import org.springframework.data.r2dbc.repository.R2dbcRepository;
-import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-@Repository
-public interface PasteRepository extends R2dbcRepository<Paste, String> {
+public interface PasteRepository {
+    Flux<Paste> findAll();
+    Mono<Paste> findById(String id, boolean blockForUpdate);
+    Mono<Paste> save(Paste paste);
+    Mono<Paste> update(Paste paste);
+    Mono<Void> delete(String id);
 }
