@@ -1,16 +1,14 @@
 package com.defers.mypastebin.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDTORequest {
-    private String username;
+public class UserDTORequest extends AbstractUserDTO {
     private String password;
-    private String email;
 }

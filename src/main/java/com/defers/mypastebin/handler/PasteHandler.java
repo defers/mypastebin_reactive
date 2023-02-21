@@ -35,11 +35,19 @@ public class PasteHandler {
     }
 
     public Mono<ServerResponse> save(ServerRequest req) {
-        return req.bodyToMono(PasteDTO.class)
-                .doOnNext(e -> pasteService.save(e))
-                .flatMap(e -> ServerResponse.created(req.uri())
-                        .body(Mono.just(e), PasteDTO.class)
-                );
+        Mono<PasteDTO> pasteDtoMono = req.bodyToMono(PasteDTO.class);
+        Mono<ServerResponse> notFound = ServerResponse.notFound().build();
+
+        return pasteDtoMono
+                .flatMap(pasteDto -> pasteService.save(pasteDto))
+                .flatMap(e -> ServerResponse
+                        .created(req.uri())
+                        .contentType(MediaType.APPLICATION_NDJSON)
+                        .body(Mono.just(
+                                HttpUtils.createApiResponse(e, ApiResponseStatus.OK)
+                        ), ApiResponse.class)
+                )
+                .switchIfEmpty(notFound);
     }
 
     public Mono<ServerResponse> update(ServerRequest req) {

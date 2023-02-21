@@ -1,6 +1,8 @@
 package com.defers.mypastebin.dto.converter;
 
-public interface ConverterDTO {
-    <T, U> U convertToDto(T entity, Class<U> clazz);
-    <T, U> U convertToEntity(T dto, Class<U> clazz);
+import com.defers.mypastebin.domain.BaseEntity;
+
+public interface ConverterDTO <E extends BaseEntity, D>{
+    D convertToDto(E entity);
+    E convertToEntity(D dto);
 }

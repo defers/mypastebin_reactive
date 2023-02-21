@@ -1,6 +1,5 @@
 package com.defers.mypastebin;
 
-import com.defers.mypastebin.dto.converter.ConverterDTOImpl;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 import org.springframework.boot.SpringApplication;
@@ -24,8 +23,6 @@ public class MypastebinApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(MypastebinApplication.class, args);
-        var converter = ConverterDTOImpl.builder().build();
-        //String res = converter.convertToDto(new Paste());
     }
 
 }
