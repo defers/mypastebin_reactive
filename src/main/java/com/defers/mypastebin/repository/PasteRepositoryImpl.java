@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.r2dbc.core.DatabaseClient;
+import org.springframework.r2dbc.core.Parameter;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -49,10 +50,13 @@ public class PasteRepositoryImpl implements PasteRepository {
         return databaseClient.sql(PasteQuery.save())
                 .bind("id", paste.getId())
                 .bind("text_description", paste.getTextDescription())
-                .bind("username", paste.getUser() != null ? paste.getUser().getUsername() : null)
+                .bind("username", Parameter.fromOrEmpty(
+                        paste.getUser() != null ? paste.getUser().getUsername() : null, String.class))
                 .fetch()
                 .first()
-                .thenReturn(paste);
+                .thenReturn(paste)
+                .doOnSuccess(e -> log.info("=====> PasteRepositoryImpl.databaseClient success ===== {}", e))
+                .doOnError(e -> log.info("=====> PasteRepositoryImpl.databaseClient error ===== {}", e.getMessage()));
     }
 
     @Override

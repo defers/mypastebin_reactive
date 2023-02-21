@@ -21,16 +21,19 @@ import java.util.Set;
 @Service
 public class UserDetailsServiceImpl implements UserService {//ReactiveUserDetailsService, UserService {
     private final UserRepository userRepository;
-    private final ConverterDTO converterDTO;
+    private final ConverterDTO<User, UserDTOResponse> converterDTOResponse;
+    private final ConverterDTO<User, UserDTORequest> converterDTORequest;
     private final Validator<User> objectValidator;
     private final TransactionalOperator transactionalOperator;
 
     public UserDetailsServiceImpl(UserRepository userRepository,
-                                  ConverterDTO converterDTO,
+                                  ConverterDTO<User, UserDTOResponse> converterDTOResponse,
+                                  ConverterDTO<User, UserDTORequest> converterDTORequest,
                                   Validator<User> objectValidator,
                                   TransactionalOperator transactionalOperator) {
         this.userRepository = userRepository;
-        this.converterDTO = converterDTO;
+        this.converterDTOResponse = converterDTOResponse;
+        this.converterDTORequest = converterDTORequest;
         this.objectValidator = objectValidator;
         this.transactionalOperator = transactionalOperator;
     }
@@ -50,7 +53,7 @@ public class UserDetailsServiceImpl implements UserService {//ReactiveUserDetail
     @Override
     public Mono<UserDTOResponse> findUserDTOByUsername(String username, boolean blockForUpdate) {
         return findUserByUsername(username, blockForUpdate)
-                .map(e -> converterDTO.convertToDto(e, UserDTOResponse.class))
+                .map(e -> converterDTOResponse.convertToDto(e))
                 .doOnError(e -> log.info("=====> UserDetailsServiceImpl.findUserDTOByUsername error ===== {}", e.getMessage()))
                 .doOnSuccess(userDTO -> log.info("=====> UserDetailsServiceImpl.findUserDTOByUsername value ===== {}", userDTO));
     }
@@ -71,7 +74,7 @@ public class UserDetailsServiceImpl implements UserService {//ReactiveUserDetail
 
     @Override
     public Mono<UserDTOResponse> save(UserDTORequest userDto) {
-        User userEntity = converterDTO.convertToEntity(userDto, User.class);
+        User userEntity = converterDTORequest.convertToEntity(userDto);
         Set<String> violations = objectValidator.validate(userEntity);
         if (violations.size() > 0) {
             return Mono.error(new ValidationException(violations));
@@ -81,7 +84,7 @@ public class UserDetailsServiceImpl implements UserService {//ReactiveUserDetail
         Mono<UserDTOResponse> userDTO = userMono
                 .as(transactionalOperator::transactional)
                 .map(
-                        user -> converterDTO.convertToDto(user, UserDTOResponse.class)
+                        user -> converterDTOResponse.convertToDto(user)
                 );
         return userDTO;
     }
@@ -89,14 +92,14 @@ public class UserDetailsServiceImpl implements UserService {//ReactiveUserDetail
     @Override
     public Mono<UserDTOResponse> update(UserDTORequest userDto) {
         Mono<User> userEntity = findUserByUsername(userDto.getUsername(), true)
-                .map(e -> converterDTO.convertToEntity(userDto, User.class));
+                .map(e -> converterDTORequest.convertToEntity(userDto));
         Mono<User> userMono = userEntity
                 .flatMap(
                         entity -> userRepository.update(entity)
                 )
                 .as(transactionalOperator::transactional);
         Mono<UserDTOResponse> userDTO = userMono.map(
-                user -> converterDTO.convertToDto(user, UserDTOResponse.class)
+                user -> converterDTOResponse.convertToDto(user)
         );
         return userDTO;
     }
@@ -108,15 +111,10 @@ public class UserDetailsServiceImpl implements UserService {//ReactiveUserDetail
                 .then(userRepository.delete(username));
     }
 
-    // Test GIT
-    public void someTestMethod() {
-        System.out.println("Hello Test!");
-    }
-    
     @Override
     public Flux<UserDTOResponse> findAll() {
         return userRepository.findAll()
                 .as(transactionalOperator::transactional)
-                .map(e -> converterDTO.convertToDto(e, UserDTOResponse.class));
+                .map(e -> converterDTOResponse.convertToDto(e));
     }
 }

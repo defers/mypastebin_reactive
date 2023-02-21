@@ -28,7 +28,7 @@ public class PasteQuery {
     }
 
     public static String save() {
-        var query = "INSERT INTO paste (id, text_description, username) " +
+        var query = "INSERT INTO public.paste (id, text_description, username) " +
                 "VALUES (:id, :text_description, :username)";
         return query;
     }
