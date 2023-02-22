@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Objects;
+
 @Data
 @Slf4j
 @RequiredArgsConstructor
@@ -51,7 +53,7 @@ public class PasteRepositoryImpl implements PasteRepository {
                 .bind("id", paste.getId())
                 .bind("text_description", paste.getTextDescription())
                 .bind("username", Parameter.fromOrEmpty(
-                        paste.getUser() != null ? paste.getUser().getUsername() : null, String.class))
+                        Objects.nonNull(paste.getUser()) ? paste.getUser().getUsername() : null, String.class))
                 .fetch()
                 .first()
                 .thenReturn(paste)
@@ -61,11 +63,22 @@ public class PasteRepositoryImpl implements PasteRepository {
 
     @Override
     public Mono<Paste> update(Paste paste) {
-        return null;
+        return databaseClient.sql(PasteQuery.update())
+                .bind("id", paste.getId())
+                .bind("text_description", paste.getTextDescription())
+                .bind("username", Parameter.fromOrEmpty(
+                        Objects.nonNull(paste.getUser()) ? paste.getUser().getUsername() : null, String.class))
+                .fetch()
+                .first()
+                .thenReturn(paste);
     }
 
     @Override
     public Mono<Void> delete(String id) {
-        return null;
+        return databaseClient.sql(PasteQuery.delete())
+                .bind("id", id)
+                .fetch()
+                .first()
+                .then();
     }
 }

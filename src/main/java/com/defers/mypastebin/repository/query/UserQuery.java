@@ -32,7 +32,7 @@ public class UserQuery {
     public static String findUserByUsername(boolean blockForUpdate) {
         String query = findAll() + " WHERE u.username = :username";
         if (blockForUpdate) {
-            query += " FOR UPDATE";
+            query += " FOR UPDATE OF u";
         }
         return query;
     }

@@ -9,5 +9,5 @@ public interface PasteService {
     Mono<PasteDTO> findById(String id);
     Mono<PasteDTO> save(PasteDTO paste);
     Mono<PasteDTO> update(PasteDTO paste, String id);
-    Mono<Void> delete(PasteDTO paste, String id);
+    Mono<Void> delete(String id);
 }
