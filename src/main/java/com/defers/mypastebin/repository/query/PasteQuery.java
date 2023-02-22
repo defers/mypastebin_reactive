@@ -22,7 +22,7 @@ public class PasteQuery {
     public static String findById(boolean blockForUpdate) {
         var query = findAll() + " WHERE p.id = :id";
         if (blockForUpdate) {
-            query += " FOR UPDATE";
+            query += " FOR UPDATE OF p";
         }
         return query;
     }
@@ -30,6 +30,20 @@ public class PasteQuery {
     public static String save() {
         var query = "INSERT INTO public.paste (id, text_description, username) " +
                 "VALUES (:id, :text_description, :username)";
+        return query;
+    }
+
+    public static String delete() {
+        var query = "DELETE FROM public.paste p WHERE p.id = :id";
+        return query;
+    }
+
+    public static String update() {
+        var query = "UPDATE public.paste " +
+                "SET id = :id, " +
+                "text_description = :text_description, " +
+                "username = :username " +
+                "WHERE id = :id";
         return query;
     }
 }

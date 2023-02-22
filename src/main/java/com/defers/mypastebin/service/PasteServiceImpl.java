@@ -59,43 +59,16 @@ public class PasteServiceImpl implements PasteService {
 
     @Override
     public Mono<PasteDTO> save(PasteDTO paste) {
-//        return Mono.justOrEmpty(paste)
-//                .doOnNext(e -> System.out.println("qqqqTqEEEESSSS!!!!!!!!"))
-//                .map(d -> {
-//                    System.out.println("!!!TEST!!!!!!!!!!!!!!!");
-//                    return converterDTO.convertToEntity(d);
-//                }
-//                )
-//                .map(e -> {
-//                            System.out.println("TEST!!!!!!!!!!!!!!!");
-//                            Set<String> violations = objectValidator.validate(e);
-//                            if (violations.size() > 0) {
-//                                Mono.error(new ValidationException(violations));
-//                            }
-//                            e.setId(PasteIdGenerator.generate());
-//                            return e;
-//                        }
-//                )
-//                .flatMap(e -> pasteRepository.save(e))
-//                //.as(transactionalOperator::transactional)
-//                .map(e -> converterDTO.convertToDto(e))
-//                .log()
-//                .doOnError(e -> log.info("=====> PasteServiceImpl.save error ===== {}", e.getMessage()))
-//                .doOnSuccess(pasteDTO -> log.info("=====> PasteServiceImpl.save value ===== {}", pasteDTO));
-
         Paste pasteEntity = converterDTO.convertToEntity(paste);
         Set<String> violations = objectValidator.validate(pasteEntity);
         if (violations.size() > 0) {
             return Mono.error(new ValidationException(violations));
         }
-//        var pasteEntity = Paste.builder()
-//                .textDescription("yoyoyoy12345")
-//                .build();
+
         pasteEntity.setId(PasteIdGenerator.generate());
         return pasteRepository.save(pasteEntity)
                 .as(transactionalOperator::transactional)
                 .map(e -> converterDTO.convertToDto(e));
-
     }
 
     @Override
@@ -110,20 +83,20 @@ public class PasteServiceImpl implements PasteService {
                         new PasteNotFoundException(
                                 MessagesUtils.getFormattedMessage("Paste with id %s not found", id)))
                 )
-                .doOnNext(e -> pasteRepository.save(e))
+                .flatMap(e -> pasteRepository.update(pasteEntity))
                 .map(e -> converterDTO.convertToDto(e))
                 .as(transactionalOperator::transactional);
     }
 
     @Override
-    public Mono<Void> delete(PasteDTO paste, String id) {
+    public Mono<Void> delete(String id) {
         return pasteRepository.findById(id, true)
                 .switchIfEmpty(Mono.error(
                         new PasteNotFoundException(
                                 MessagesUtils.getFormattedMessage("Paste with id %s not found", id)))
 
                 )
-                .doOnNext(e -> pasteRepository.delete(id))
+                .flatMap(e -> pasteRepository.delete(id))
                 .thenEmpty(Mono.empty())
                 .as(transactionalOperator::transactional);
     }
