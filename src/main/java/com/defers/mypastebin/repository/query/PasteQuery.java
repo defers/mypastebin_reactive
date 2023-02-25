@@ -1,5 +1,9 @@
 package com.defers.mypastebin.repository.query;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PasteQuery {
     public static String findAll() {
         var query = "SELECT " +

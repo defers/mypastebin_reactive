@@ -8,10 +8,9 @@ spring:
   config:
     activate:
       on-profile: dev
+    import: optional:secrets.yml
   r2dbc:
     url: r2dbc:postgresql://localhost:5430/mypastebin?schema=public&serverTimezone=UTC
-    password: admin
-    username: admin
     pool:
       enabled: true
       initial-size: 2
@@ -26,6 +25,8 @@ spring:
     url: jdbc:postgresql://localhost:5430/mypastebin?schema=public
     user: admin
     password: admin
+  application:
+    name: mypastebin
 logging:
   level:
     io.r2dbc.postgresql.QUERY: DEBUG
@@ -36,6 +37,8 @@ logging:
       springframework:
         data:
           r2dbc: DEBUG
+  file:
+    name: log.txt
 app:
   database:
     port: 5430

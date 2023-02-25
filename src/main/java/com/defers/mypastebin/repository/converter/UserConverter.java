@@ -21,7 +21,7 @@ public class UserConverter {
                         .updatedDate((LocalDateTime) rows.get(0).get("u_updated_date"))
                         .roles(rows.stream()
                                 .filter(e -> e.get("r_id") != null)
-                                .map(e -> RolesConverter.fromRow(e))
+                                .map(RolesConverter::fromRow)
                                 .collect(Collectors.toSet()))
                         .build()
                 );

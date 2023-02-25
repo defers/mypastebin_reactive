@@ -42,13 +42,13 @@ public class PasteServiceImpl implements PasteService {
     @Override
     public Flux<PasteDTO> findAll() {
         return pasteRepository.findAll()
-                .map(e -> converterDTO.convertToDto(e));
+                .map(converterDTO::convertToDto);
     }
 
     @Override
     public Mono<PasteDTO> findById(String id) {
         return pasteRepository.findById(id, false)
-                .map(e -> converterDTO.convertToDto(e))
+                .map(converterDTO::convertToDto)
                 .switchIfEmpty(
                         Mono.error(
                                 new PasteNotFoundException(
@@ -61,21 +61,21 @@ public class PasteServiceImpl implements PasteService {
     public Mono<PasteDTO> save(PasteDTO paste) {
         Paste pasteEntity = converterDTO.convertToEntity(paste);
         Set<String> violations = objectValidator.validate(pasteEntity);
-        if (violations.size() > 0) {
+        if (violations.isEmpty()) {
             return Mono.error(new ValidationException(violations));
         }
 
         pasteEntity.setId(PasteIdGenerator.generate());
         return pasteRepository.save(pasteEntity)
                 .as(transactionalOperator::transactional)
-                .map(e -> converterDTO.convertToDto(e));
+                .map(converterDTO::convertToDto);
     }
 
     @Override
     public Mono<PasteDTO> update(PasteDTO paste, String id) {
         Paste pasteEntity = converterDTO.convertToEntity(paste);
         Set<String> violations = objectValidator.validate(pasteEntity);
-        if (violations.size() > 0) {
+        if (violations.isEmpty()) {
             return Mono.error(new ValidationException(violations));
         }
         return pasteRepository.findById(id, true)
@@ -84,7 +84,7 @@ public class PasteServiceImpl implements PasteService {
                                 MessagesUtils.getFormattedMessage("Paste with id %s not found", id)))
                 )
                 .flatMap(e -> pasteRepository.update(pasteEntity))
-                .map(e -> converterDTO.convertToDto(e))
+                .map(converterDTO::convertToDto)
                 .as(transactionalOperator::transactional);
     }
 

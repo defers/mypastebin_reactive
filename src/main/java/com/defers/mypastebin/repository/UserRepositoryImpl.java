@@ -29,7 +29,7 @@ public class UserRepositoryImpl implements UserRepository {
                 .fetch()
                 .all()
                 .bufferUntilChanged(result -> result.get("u_username"))
-                .flatMap(rows -> UserConverter.fromRows(rows));
+                .flatMap(UserConverter::fromRows);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class UserRepositoryImpl implements UserRepository {
                 .switchIfEmpty(Mono.error(new UserNotFoundException(
                         MessagesUtils.getFormattedMessage("Username with name %s has not found", username))))
                 .bufferUntilChanged(result -> result.get("u_username"))
-                .flatMap(rows -> UserConverter.fromRows(rows))
+                .flatMap(UserConverter::fromRows)
                 .single()
                 .doOnError(e -> log.info("=====> UserRepositoryImpl.findUserByUsername error ===== {}", e.getMessage()));
     }

@@ -7,9 +7,11 @@ import com.defers.mypastebin.dto.converter.ConverterDTO;
 import com.defers.mypastebin.exception.UserNotFoundException;
 import com.defers.mypastebin.exception.ValidationException;
 import com.defers.mypastebin.repository.UserRepository;
-import com.defers.mypastebin.util.MessagesUtils;
+import com.defers.mypastebin.security.UserDetailsImpl;
 import com.defers.mypastebin.validator.Validator;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Flux;
@@ -17,9 +19,11 @@ import reactor.core.publisher.Mono;
 
 import java.util.Set;
 
+import static com.defers.mypastebin.util.MessagesUtils.getFormattedMessage;
+
 @Slf4j
 @Service
-public class UserDetailsServiceImpl implements UserService {//ReactiveUserDetailsService, UserService {
+public class UserDetailsServiceImpl implements UserService, ReactiveUserDetailsService {
     private final UserRepository userRepository;
     private final ConverterDTO<User, UserDTOResponse> converterDTOResponse;
     private final ConverterDTO<User, UserDTORequest> converterDTORequest;
@@ -44,7 +48,7 @@ public class UserDetailsServiceImpl implements UserService {//ReactiveUserDetail
                 .as(transactionalOperator::transactional)
                 .switchIfEmpty(Mono.error(
                         new UserNotFoundException(
-                                MessagesUtils.getFormattedMessage("Username with name %s is not found", username)))
+                                getFormattedMessage("Username with name %s is not found", username)))
                 )
                 .doOnError(e -> log.info("=====> UserDetailsServiceImpl.findUserByUsername error ===== {}", e.getMessage()))
                 .doOnSuccess(user -> log.info("=====> UserDetailsServiceImpl.findUserByUsername value ===== {}", user));
@@ -53,30 +57,30 @@ public class UserDetailsServiceImpl implements UserService {//ReactiveUserDetail
     @Override
     public Mono<UserDTOResponse> findUserDTOByUsername(String username, boolean blockForUpdate) {
         return findUserByUsername(username, blockForUpdate)
-                .map(e -> converterDTOResponse.convertToDto(e))
+                .map(converterDTOResponse::convertToDto)
                 .doOnError(e -> log.info("=====> UserDetailsServiceImpl.findUserDTOByUsername error ===== {}", e.getMessage()))
                 .doOnSuccess(userDTO -> log.info("=====> UserDetailsServiceImpl.findUserDTOByUsername value ===== {}", userDTO));
     }
 
-//    @Override
-//    public Mono<UserDetails> findByUsername(String username) {
-//        return userRepository
-//                .findUserByUsername(username)
-//                .switchIfEmpty(Mono.error(new UserNotFoundException(
-//                        getFormattedMessage("User with username %s not found", username)))
-//                )
-//                .map(user -> UserDetailsImpl
-//                        .builder()
-//                        .user(user)
-//                        .build()
-//                );
-//    }
+    @Override
+    public Mono<UserDetails> findByUsername(String username) {
+        return userRepository
+                .findUserByUsername(username, false)
+                .switchIfEmpty(Mono.error(new UserNotFoundException(
+                        getFormattedMessage("User with username %s not found", username)))
+                )
+                .map(user -> UserDetailsImpl
+                        .builder()
+                        .user(user)
+                        .build()
+                );
+    }
 
     @Override
     public Mono<UserDTOResponse> save(UserDTORequest userDto) {
         User userEntity = converterDTORequest.convertToEntity(userDto);
         Set<String> violations = objectValidator.validate(userEntity);
-        if (violations.size() > 0) {
+        if (violations.isEmpty()) {
             return Mono.error(new ValidationException(violations));
         }
 
@@ -84,7 +88,7 @@ public class UserDetailsServiceImpl implements UserService {//ReactiveUserDetail
         Mono<UserDTOResponse> userDTO = userMono
                 .as(transactionalOperator::transactional)
                 .map(
-                        user -> converterDTOResponse.convertToDto(user)
+                        converterDTOResponse::convertToDto
                 );
         return userDTO;
     }
@@ -95,11 +99,11 @@ public class UserDetailsServiceImpl implements UserService {//ReactiveUserDetail
                 .map(e -> converterDTORequest.convertToEntity(userDto));
         Mono<User> userMono = userEntity
                 .flatMap(
-                        entity -> userRepository.update(entity)
+                        userRepository::update
                 )
                 .as(transactionalOperator::transactional);
         Mono<UserDTOResponse> userDTO = userMono.map(
-                user -> converterDTOResponse.convertToDto(user)
+                converterDTOResponse::convertToDto
         );
         return userDTO;
     }
@@ -115,6 +119,6 @@ public class UserDetailsServiceImpl implements UserService {//ReactiveUserDetail
     public Flux<UserDTOResponse> findAll() {
         return userRepository.findAll()
                 .as(transactionalOperator::transactional)
-                .map(e -> converterDTOResponse.convertToDto(e));
+                .map(converterDTOResponse::convertToDto);
     }
 }

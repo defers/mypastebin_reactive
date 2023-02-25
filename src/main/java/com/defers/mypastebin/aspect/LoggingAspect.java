@@ -1,5 +1,6 @@
 package com.defers.mypastebin.aspect;
 
+import com.defers.mypastebin.util.MessagesUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
@@ -28,13 +29,13 @@ public class LoggingAspect {
     @Before(value = "execution(* com.defers.mypastebin..*..*(..))")
     public void logBefore(JoinPoint joinPoint) {
         if (logEnabled) {
-            log.info("Method starts: " + joinPoint.getSignature());
+            log.info(MessagesUtils.getFormattedMessage("Method starts: %s", joinPoint.getSignature()));
         }
     }
     @After(value = "execution(* com.defers.mypastebin..*..*(..))")
     public void logAfter(JoinPoint joinPoint) {
         if (logEnabled) {
-            log.info("Method ends: " + joinPoint.getSignature());
+            log.info(MessagesUtils.getFormattedMessage("Method ends: %s", joinPoint.getSignature()));
         }
     }
 }

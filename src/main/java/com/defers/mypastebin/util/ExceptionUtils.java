@@ -3,6 +3,11 @@ package com.defers.mypastebin.util;
 import java.lang.reflect.InvocationTargetException;
 
 public class ExceptionUtils {
+
+    private ExceptionUtils() {
+
+    }
+
     public static <T extends Exception> void throwException(Class<T> ex,
                                                             String msg,
                                                             Object... args) throws T {

@@ -41,7 +41,7 @@ public class UserDTOMapper<D extends AbstractUserDTO> extends AbstractConverterD
 
     private Set<Long> getRolesId(User source) {
         return source.getRoles().stream()
-                .map(e -> e.getId())
+                .map(Role::getId)
                 .collect(Collectors.toSet());
     }
 
@@ -51,7 +51,7 @@ public class UserDTOMapper<D extends AbstractUserDTO> extends AbstractConverterD
         if (Objects.nonNull(rolesDto)) {
             Set<Role> roles = rolesDto.stream()
                     .map(id -> roleRepository.findById(id, true).onErrorComplete().block())
-                    .filter(e -> Objects.nonNull(e))
+                    .filter(Objects::nonNull)
                     .collect(Collectors.toSet());
             destination.setRoles(roles);
         }
