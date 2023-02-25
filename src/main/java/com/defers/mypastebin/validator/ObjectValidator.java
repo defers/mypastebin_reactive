@@ -18,9 +18,9 @@ public class ObjectValidator<T> implements com.defers.mypastebin.validator.Valid
     @Override
     public Set<String> validate(T objectToValidate) {
         Set<ConstraintViolation<T>> violations = validator.validate(objectToValidate);
-        if (violations.size() != 0) {
+        if (violations.isEmpty()) {
             return violations.stream()
-                    .map(e -> e.getMessage())
+                    .map(ConstraintViolation::getMessage)
                     .collect(Collectors.toSet());
         }
         return Collections.emptySet();

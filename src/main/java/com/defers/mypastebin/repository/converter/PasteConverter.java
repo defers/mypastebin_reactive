@@ -2,7 +2,8 @@ package com.defers.mypastebin.repository.converter;
 
 import com.defers.mypastebin.domain.Paste;
 import com.defers.mypastebin.domain.User;
-import com.defers.mypastebin.repository.UserRepository;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
@@ -10,8 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PasteConverter {
-    private static UserRepository userRepository;
 
     public static Mono<Paste> fromRows(List<Map<String, Object>> rows) {
         Map<String, Object> row = rows.get(0);

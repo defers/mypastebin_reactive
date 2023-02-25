@@ -37,7 +37,7 @@ public class PasteHandler {
     public Mono<ServerResponse> save(ServerRequest req) {
         Mono<PasteDTO> pasteDtoMono = req.bodyToMono(PasteDTO.class);
         return pasteDtoMono
-                .flatMap(pasteDto -> pasteService.save(pasteDto))
+                .flatMap(pasteService::save)
                 .flatMap(e -> ServerResponse
                         .created(req.uri())
                         .contentType(MediaType.APPLICATION_NDJSON)

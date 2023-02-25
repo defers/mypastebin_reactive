@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Builder
 @Entity
 @Table(name = "role")
-public class Role {
+public class Role extends BaseEntity{
     @Id
     @SequenceGenerator(name = "role_id_generator", sequenceName = "role_id_sequence")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "role_id_generator")

@@ -29,7 +29,7 @@ public class PasteRepositoryImpl implements PasteRepository {
                 .fetch()
                 .all()
                 .bufferUntilChanged(result -> result.get("p_id"))
-                .flatMap(rows -> PasteConverter.fromRows(rows))
+                .flatMap(PasteConverter::fromRows)
                 .doOnError(e -> log.info("=====> PasteRepositoryImpl.findAll error ===== {}", e.getMessage()));
     }
 
@@ -42,7 +42,7 @@ public class PasteRepositoryImpl implements PasteRepository {
                 .switchIfEmpty(Mono.error(new PasteNotFoundException(
                         MessagesUtils.getFormattedMessage("Paste with id %s has not found", id))))
                 .bufferUntilChanged(result -> result.get("p_id"))
-                .flatMap(rows -> PasteConverter.fromRows(rows))
+                .flatMap(PasteConverter::fromRows)
                 .single()
                 .doOnError(e -> log.info("=====> PasteRepositoryImpl.findById error ===== {}", e.getMessage()));
     }
