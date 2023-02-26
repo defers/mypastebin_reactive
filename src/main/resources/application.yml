@@ -46,6 +46,8 @@ app:
   all-methods-log:
     enabled: true
   host: localhost
+  security:
+    expiration-time-seconds: 60
 springdoc:
   api-docs:
     path: /swagger-doc/v3/api-docs
