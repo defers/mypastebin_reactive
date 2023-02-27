@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 // TODO Dockerfile
 // TODO Tests
-// TODO security
+// TODO Roles
 // TODO Redis cache
 @Configuration
 public class ApplicationConfiguration {
