@@ -8,10 +8,12 @@ import com.defers.mypastebin.exception.UserNotFoundException;
 import com.defers.mypastebin.exception.ValidationException;
 import com.defers.mypastebin.repository.UserRepository;
 import com.defers.mypastebin.security.UserDetailsImpl;
+import com.defers.mypastebin.util.SecurityUtils;
 import com.defers.mypastebin.validator.Validator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Flux;
@@ -29,17 +31,20 @@ public class UserDetailsServiceImpl implements UserService, ReactiveUserDetailsS
     private final ConverterDTO<User, UserDTORequest> converterDTORequest;
     private final Validator<User> objectValidator;
     private final TransactionalOperator transactionalOperator;
+    private final PasswordEncoder passwordEncoder;
 
     public UserDetailsServiceImpl(UserRepository userRepository,
                                   ConverterDTO<User, UserDTOResponse> converterDTOResponse,
                                   ConverterDTO<User, UserDTORequest> converterDTORequest,
                                   Validator<User> objectValidator,
-                                  TransactionalOperator transactionalOperator) {
+                                  TransactionalOperator transactionalOperator,
+                                  PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.converterDTOResponse = converterDTOResponse;
         this.converterDTORequest = converterDTORequest;
         this.objectValidator = objectValidator;
         this.transactionalOperator = transactionalOperator;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -80,10 +85,11 @@ public class UserDetailsServiceImpl implements UserService, ReactiveUserDetailsS
     public Mono<UserDTOResponse> save(UserDTORequest userDto) {
         User userEntity = converterDTORequest.convertToEntity(userDto);
         Set<String> violations = objectValidator.validate(userEntity);
-        if (violations.isEmpty()) {
+        if (!violations.isEmpty()) {
             return Mono.error(new ValidationException(violations));
         }
 
+        setEncodePassword(userEntity);
         Mono<User> userMono = userRepository.save(userEntity);
         Mono<UserDTOResponse> userDTO = userMono
                 .as(transactionalOperator::transactional)
@@ -93,10 +99,23 @@ public class UserDetailsServiceImpl implements UserService, ReactiveUserDetailsS
         return userDTO;
     }
 
+    private void setEncodePassword(User user) {
+        String encodedPassword = SecurityUtils.encodePassword(user.getPassword(), passwordEncoder);
+        user.setPassword(encodedPassword);
+    }
+
     @Override
     public Mono<UserDTOResponse> update(UserDTORequest userDto) {
         Mono<User> userEntity = findUserByUsername(userDto.getUsername(), true)
-                .map(e -> converterDTORequest.convertToEntity(userDto));
+                .map(e -> {
+                    User user = converterDTORequest.convertToEntity(userDto);
+                    Set<String> violations = objectValidator.validate(user);
+                    if (!violations.isEmpty()) {
+                        Mono.error(new ValidationException(violations));
+                    }
+                    setEncodePassword(user);
+                    return user;
+                });
         Mono<User> userMono = userEntity
                 .flatMap(
                         userRepository::update
