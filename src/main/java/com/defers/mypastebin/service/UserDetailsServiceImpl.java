@@ -50,7 +50,6 @@ public class UserDetailsServiceImpl implements UserService, ReactiveUserDetailsS
     @Override
     public Mono<User> findUserByUsername(String username, boolean blockForUpdate) {
         return userRepository.findUserByUsername(username, blockForUpdate)
-                .as(transactionalOperator::transactional)
                 .switchIfEmpty(Mono.error(
                         new UserNotFoundException(
                                 getFormattedMessage("Username with name %s is not found", username)))

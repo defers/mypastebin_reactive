@@ -39,10 +39,5 @@ public class SecurityConfiguration {
         return new BCryptPasswordEncoder();
     }
 
-//    @Bean
-//    public WebSecurityCustomizer webSecurityCustomizer(WebSecurity web) {
-//        return web1 -> web.ignoring().antMatchers("/resources/");
-//
-//    }
 
 }
