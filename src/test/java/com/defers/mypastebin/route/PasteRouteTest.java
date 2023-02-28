@@ -52,7 +52,7 @@ class PasteRouteTest {
                 .thenReturn(Mono.just(paste));
 
         webTestClient.get()
-                .uri("/v1/paste/test11")
+                .uri("/v1/paste/test1")
                 .accept(MediaType.APPLICATION_NDJSON)
                 .exchange()
                 .expectStatus()
