@@ -9,9 +9,25 @@ services:
             POSTGRES_USER: "admin"
             POSTGRES_PASSWORD: "admin"
         ports:
-            - "5430:5432"
+           - "5430:5430"
         volumes:
             - db:/var/lib/postgresql/data
+        networks:
+            - app-network
+    application-server:
+         container_name: mypastebin
+         build:
+           dockerfile: Dockerfile
+         image: mypastebin:latest
+         ports:
+           - 8080:8080
+         depends_on:
+           - postgres
+         networks:
+           - app-network
 volumes:
     db:
         driver: local
+networks:
+    app-network:
+        driver: bridge

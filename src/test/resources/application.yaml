@@ -29,17 +29,17 @@ logging:
     io.r2dbc.postgresql.QUERY: DEBUG
     io.r2dbc.postgresql.PARAM: DEBUG
     liquibase: INFO
-    web: DEBUG
+    web: INFO
     org:
       springframework:
         data:
-          r2dbc: DEBUG
+          r2dbc: INFO
   file:
     name: log.txt
 app:
-#  database:
-#    port: 5430
-#    schema: public
+  database:
+    port: 5430
+    schema: public
   all-methods-log:
     enabled: true
   host: localhost
