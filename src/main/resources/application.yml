@@ -53,11 +53,55 @@ springdoc:
     path: /swagger-doc/v3/api-docs
   swagger-ui:
     path: /swagger-doc/swagger-ui.html
+
 ---
 
 spring:
   config:
     activate:
-      on-profile: test
+      on-profile: prod
+    import: optional:secrets.yml
   r2dbc:
-    url: r2dbc:tc:postgresql:///testdb?TC_IMAGE_TAG=14-alpine
+    url: r2dbc:postgresql://postgres:5432/mypastebin?schema=public&serverTimezone=UTC
+    pool:
+      enabled: true
+      initial-size: 2
+      max-size: 2
+    name: mypastebin
+  main:
+    web-application-type: reactive
+    allow-circular-references: true
+  liquibase:
+    change-log: classpath:db/changelog/changelog-master.yaml
+    enabled: true
+    url: jdbc:postgresql://postgres:5432/mypastebin?schema=public
+    user: admin
+    password: admin
+  application:
+    name: mypastebin
+logging:
+  level:
+    io.r2dbc.postgresql.QUERY: DEBUG
+    io.r2dbc.postgresql.PARAM: DEBUG
+    liquibase: INFO
+    web: DEBUG
+    org:
+      springframework:
+        data:
+          r2dbc: DEBUG
+  file:
+    name: log.txt
+app:
+  database:
+    port: 5432
+    schema: public
+  all-methods-log:
+    enabled: true
+  host: localhost
+  security:
+    expiration-time-seconds: 3600
+springdoc:
+  api-docs:
+    path: /swagger-doc/v3/api-docs
+  swagger-ui:
+    path: /swagger-doc/swagger-ui.html
