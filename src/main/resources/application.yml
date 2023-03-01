@@ -53,4 +53,11 @@ springdoc:
     path: /swagger-doc/v3/api-docs
   swagger-ui:
     path: /swagger-doc/swagger-ui.html
+---
 
+spring:
+  config:
+    activate:
+      on-profile: test
+  r2dbc:
+    url: r2dbc:tc:postgresql:///testdb?TC_IMAGE_TAG=14-alpine
